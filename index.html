@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Manajemen Tugas Piket</title>
+    <title>Sistem Manajemen Tugas Piket Kelas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -20,7 +20,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -47,13 +47,13 @@
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 2fr;
             gap: 20px;
         }
 
-        @media (min-width: 768px) {
+        @media (max-width: 768px) {
             .main-content {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
             }
         }
 
@@ -62,6 +62,7 @@
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
         }
 
         .card h2 {
@@ -69,6 +70,9 @@
             color: #2c3e50;
             border-bottom: 2px solid #f0f0f0;
             padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .form-group {
@@ -102,7 +106,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
-            transition: background 0.3s;
+            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -110,6 +114,7 @@
 
         button:hover {
             background: #2980b9;
+            transform: translateY(-2px);
         }
 
         .btn-danger {
@@ -126,6 +131,14 @@
 
         .btn-success:hover {
             background: #27ae60;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
         }
 
         .btn-whatsapp {
@@ -151,11 +164,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .task-item.completed {
             border-left-color: #2ecc71;
             opacity: 0.7;
+        }
+
+        .task-item.absent {
+            border-left-color: #e74c3c;
         }
 
         .task-info h3 {
@@ -295,49 +318,181 @@
         .notification.error {
             background: #e74c3c;
         }
+
+        .absence-reasons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .absence-reasons button {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .day-section {
+            margin-bottom: 25px;
+        }
+
+        .day-header {
+            background: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-tasks {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .task-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .task-buttons button {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .student-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .student-selector select {
+            flex: 1;
+        }
+
+        .student-selector button {
+            flex: 0 0 auto;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-broom"></i> Sistem Manajemen Tugas Piket</h1>
+            <h1><i class="fas fa-broom"></i> Sistem Manajemen Tugas Piket Kelas</h1>
             <p class="description">Atur jadwal piket dengan mudah dan cepat!</p>
         </header>
 
         <div class="main-content">
-            <div class="card">
-                <h2><i class="fas fa-plus-circle"></i> Tambah Tugas Piket Baru</h2>
-                <form id="taskForm">
-                    <div class="form-group">
-                        <label for="taskName">Nama Tugas</label>
-                        <input type="text" id="taskName" placeholder="Contoh: Menyapu lantai" required>
+            <div>
+                <div class="card">
+                    <h2><i class="fas fa-plus-circle"></i> Tambah Tugas Piket</h2>
+                    <form id="taskForm">
+                        <div class="form-group">
+                            <label for="taskName">Nama Tugas</label>
+                            <input type="text" id="taskName" placeholder="Ketik tugas atau pilih di bawah" required>
+                        </div>
+                        
+                        <div class="task-buttons">
+                            <button type="button" class="btn-success" onclick="setTask('Menyapu lantai')">
+                                <i class="fas fa-broom"></i> Menyapu
+                            </button>
+                            <button type="button" class="btn-success" onclick="setTask('Mengepel lantai')">
+                                <i class="fas fa-water"></i> Mengepel
+                            </button>
+                            <button type="button" class="btn-success" onclick="setTask('Membersihkan papan tulis')">
+                                <i class="fas fa-chalkboard"></i> Papan Tulis
+                            </button>
+                            <button type="button" class="btn-success" onclick="setTask('Merapihkan kursi')">
+                                <i class="fas fa-chair"></i> Merapihkan Kursi
+                            </button>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label for="assignee">Penanggung Jawab</label>
+                            <input type="text" id="assignee" placeholder="Nama siswa" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="day">Hari</label>
+                            <select id="day" required>
+                                <option value="">Pilih hari</option>
+                                <option value="Senin">Senin</option>
+                                <option value="Selasa">Selasa</option>
+                                <option value="Rabu">Rabu</option>
+                                <option value="Kamis">Kamis</option>
+                                <option value="Jumat">Jumat</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-success"><i class="fas fa-plus"></i> Tambah Tugas</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-chart-bar"></i> Statistik</h2>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h3 id="totalTasks">0</h3>
+                            <p>Total Tugas</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="completedTasks">0</h3>
+                            <p>Tugas Selesai</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="absentTasks">0</h3>
+                            <p>Tidak Hadir</p>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="assignee">Penanggung Jawab</label>
-                        <input type="text" id="assignee" placeholder="Nama anggota" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="day">Hari</label>
-                        <select id="day" required>
-                            <option value="">Pilih hari</option>
-                            <option value="Senin">Senin</option>
-                            <option value="Selasa">Selasa</option>
-                            <option value="Rabu">Rabu</option>
-                            <option value="Kamis">Kamis</option>
-                            <option value="Jumat">Jumat</option>
-                            <option value="Sabtu">Sabtu</option>
-                            <option value="Minggu">Minggu</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-success"><i class="fas fa-plus"></i> Tambah Tugas</button>
-                </form>
+                </div>
             </div>
 
             <div class="card">
-                <h2><i class="fas fa-tasks"></i> Daftar Tugas Piket</h2>
-                <ul class="task-list" id="taskList">
-                    <!-- Daftar tugas akan muncul di sini -->
-                </ul>
+                <h2><i class="fas fa-tasks"></i> Daftar Tugas Piket per Hari</h2>
+                <div id="tasksByDay">
+                    <!-- Daftar tugas akan dikelompokkan per hari di sini -->
+                </div>
                 <div class="empty-state" id="emptyState">
                     <p><i class="fas fa-inbox"></i> Belum ada tugas piket. Tambahkan tugas baru!</p>
                 </div>
@@ -345,7 +500,7 @@
         </div>
 
         <div class="card whatsapp-section">
-            <h2><i class="fab fa-whatsapp"></i> Kirim Jadwal ke WhatsApp</h2>
+            <h2><i class="fab fa-whatsapp"></i> Kirim Laporan ke WhatsApp mu</h2>
             
             <div class="tabs">
                 <div class="tab active" data-tab="preview">Pratinjau Pesan</div>
@@ -361,10 +516,8 @@
                         <option value="Rabu">Rabu</option>
                         <option value="Kamis">Kamis</option>
                         <option value="Jumat">Jumat</option>
-                        <option value="Sabtu">Sabtu</option>
-                        <option value="Minggu">Minggu</option>
                     </select>
-                    <input type="text" id="recipientName" placeholder="Nama Penerima (Opsional)">
+                    <input type="text" id="teacherName" placeholder="Nama Guru (Contoh: Bu Sari)">
                     <button id="previewBtn" class="btn-success"><i class="fas fa-eye"></i> Perbarui Pratinjau</button>
                 </div>
                 
@@ -372,7 +525,7 @@
                     Pesan akan muncul di sini...
                 </div>
                 
-                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
                     <button id="sendWhatsApp" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Kirim ke WhatsApp</button>
                     <button id="copyMessage" class="btn-success"><i class="fas fa-copy"></i> Salin Teks</button>
                 </div>
@@ -380,35 +533,86 @@
             
             <div class="tab-content" id="settings-tab">
                 <div class="form-group">
-                    <label for="customMessage">Pesan Kustom (Yang muncul paling awal di teks)</label>
-                    <textarea id="customMessage" placeholder="Halo! Berikut jadwal piket untuk minggu ini:"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="teacherName">Nama Guru (Pakai Bapa/Ibu)</label>
-                    <input type="text" id="teacherName" placeholder="Contoh: Bu Sari">
+                    <label for="customMessage">Pesan Kustom untuk Guru</label>
+                    <textarea id="customMessage">Assalamualaikum Ibu/Bapa (Nama Guru) aku izin kirim list yang piket hari ini:</textarea>
                 </div>
                 <button id="saveSettings" class="btn-success"><i class="fas fa-save"></i> Simpan Pengaturan</button>
             </div>
         </div>
 
-        <div class="stats">
-            <div class="stat-card">
-                <h3 id="totalTasks">0</h3>
-                <p>Total Tugas</p>
+        <footer>
+            <p>&copy; 2025 Sistem Manajemen Tugas Piket Kelas | Dibuat untuk memudahkan siswa/i</p>
+        </footer>
+    </div>
+
+    <!-- Modal untuk Edit Tugas -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Tugas Piket</h2>
+                <button class="close-modal">&times;</button>
             </div>
-            <div class="stat-card">
-                <h3 id="completedTasks">0</h3>
-                <p>Tugas Selesai</p>
+            <form id="editTaskForm">
+                <input type="hidden" id="editTaskId">
+                <div class="form-group">
+                    <label for="editTaskName">Tugas</label>
+                    <input type="text" id="editTaskName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editAssignee">Nama siswa/i</label>
+                    <input type="text" id="editAssignee" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDay">Hari</label>
+                    <select id="editDay" required>
+                        <option value="Senin">Senin</option>
+                        <option value="Selasa">Selasa</option>
+                        <option value="Rabu">Rabu</option>
+                        <option value="Kamis">Kamis</option>
+                        <option value="Jumat">Jumat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <button type="button" id="markCompleted" class="btn-success" style="flex: 1;"><i class="fas fa-check"></i> Selesai</button>
+                        <button type="button" id="markPending" class="btn-warning" style="flex: 1;"><i class="fas fa-clock"></i> Tertunda</button>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button type="submit" class="btn-success" style="flex: 1;"><i class="fas fa-save"></i> Simpan Perubahan</button>
+                    <button type="button" id="deleteTask" class="btn-danger"><i class="fas fa-trash"></i> Hapus</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal untuk Ketidakhadiran -->
+    <div class="modal" id="absenceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-times"></i> Tandai Ketidakhadiran</h2>
+                <button class="close-modal">&times;</button>
             </div>
-            <div class="stat-card">
-                <h3 id="pendingTasks">0</h3>
-                <p>Tugas Tertunda</p>
+            <div class="form-group">
+                <label for="absentStudent">Pilih Siswa</label>
+                <div class="student-selector">
+                    <select id="absentStudent">
+                        <!-- Daftar siswa akan diisi secara dinamis -->
+                    </select>
+                    <button type="button" id="addStudentBtn" class="btn-success"><i class="fas fa-plus"></i></button>
+                </div>
+                <input type="text" id="newStudentName" placeholder="Nama siswa baru" style="display: none; margin-top: 10px;">
+            </div>
+            <div class="form-group">
+                <label>Alasan Ketidakhadiran</label>
+                <div class="absence-reasons">
+                    <button type="button" class="btn-danger" onclick="markAbsence('Sakit')"><i class="fas fa-bed"></i> Sakit</button>
+                    <button type="button" class="btn-warning" onclick="markAbsence('Izin')"><i class="fas fa-sticky-note"></i> Izin</button>
+                    <button type="button" class="btn-danger" onclick="markAbsence('Kabur')"><i class="fas fa-running"></i> Kabur</button>
+                </div>
             </div>
         </div>
-
-        <footer>
-            <p>&copy; 2025 Sistem Manajemen Tugas Piket | Dibuat dengan cinta untuk membantu para siswa/i</p>
-        </footer>
     </div>
 
     <div class="notification" id="notification">
@@ -417,43 +621,66 @@
     </div>
 
     <script>
-        // Data contoh untuk tugas piket
-        let tasks = JSON.parse(localStorage.getItem('piketTasks')) || [
-
-        ];
+        // Data untuk tugas piket
+        let tasks = JSON.parse(localStorage.getItem('piketTasks')) || [];
 
         // Pengaturan WhatsApp
         let settings = JSON.parse(localStorage.getItem('piketSettings')) || {
-            customMessage: "Ibu/Bapa (Nama Guru) aku izin kirim list yang piket hari ini:",
-            teacherName: "Ibu/Bapa (Nama Guru)"
+            customMessage: "Ibu/Bapa aku izin kirim list yang piket hari ini:",
+            teacherName: ""
         };
+
+        // Hari yang aktif (Senin-Jumat)
+        const activeDays = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+
+        // Daftar tugas umum
+        const commonTasks = [
+            'Menyapu lantai',
+            'Mengepel lantai',
+            'Membersihkan papan tulis',
+            'Merapihkan kursi'
+        ];
 
         // Elemen DOM
         const taskForm = document.getElementById('taskForm');
-        const taskList = document.getElementById('taskList');
+        const tasksByDay = document.getElementById('tasksByDay');
         const emptyState = document.getElementById('emptyState');
         const totalTasksEl = document.getElementById('totalTasks');
         const completedTasksEl = document.getElementById('completedTasks');
-        const pendingTasksEl = document.getElementById('pendingTasks');
+        const absentTasksEl = document.getElementById('absentTasks');
         const messagePreview = document.getElementById('messagePreview');
         const filterDay = document.getElementById('filterDay');
-        const recipientName = document.getElementById('recipientName');
+        const teacherName = document.getElementById('teacherName');
         const previewBtn = document.getElementById('previewBtn');
         const sendWhatsApp = document.getElementById('sendWhatsApp');
         const copyMessage = document.getElementById('copyMessage');
         const customMessage = document.getElementById('customMessage');
-        const teacherName = document.getElementById('teacherName');
         const saveSettings = document.getElementById('saveSettings');
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
+        const editModal = document.getElementById('editModal');
+        const closeModal = document.querySelectorAll('.close-modal');
+        const editTaskForm = document.getElementById('editTaskForm');
+        const editTaskId = document.getElementById('editTaskId');
+        const editTaskName = document.getElementById('editTaskName');
+        const editAssignee = document.getElementById('editAssignee');
+        const editDay = document.getElementById('editDay');
+        const markCompleted = document.getElementById('markCompleted');
+        const markPending = document.getElementById('markPending');
+        const deleteTaskBtn = document.getElementById('deleteTask');
+        const absenceModal = document.getElementById('absenceModal');
+        const absentStudent = document.getElementById('absentStudent');
+        const addStudentBtn = document.getElementById('addStudentBtn');
+        const newStudentName = document.getElementById('newStudentName');
 
         // Inisialisasi
         function init() {
-            renderTasks();
+            renderTasksByDay();
             updateStats();
             loadSettings();
             updateMessagePreview();
             setupTabs();
+            updateStudentList();
         }
 
         // Fungsi untuk menyimpan tugas ke localStorage
@@ -466,48 +693,89 @@
             localStorage.setItem('piketSettings', JSON.stringify(settings));
         }
 
-        // Fungsi untuk menampilkan tugas
-        function renderTasks() {
-            taskList.innerHTML = '';
+        // Fungsi untuk menampilkan tugas dikelompokkan per hari
+        function renderTasksByDay() {
+            tasksByDay.innerHTML = '';
             
             if (tasks.length === 0) {
                 emptyState.style.display = 'block';
+                return;
             } else {
                 emptyState.style.display = 'none';
-                
-                tasks.forEach(task => {
-                    const taskItem = document.createElement('li');
-                    taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
-                    
-                    taskItem.innerHTML = `
-                        <div class="task-info">
-                            <h3>${task.name}</h3>
-                            <p><strong>Penanggung:</strong> ${task.assignee} | <strong>Hari:</strong> ${task.day}</p>
-                        </div>
-                        <div class="task-actions">
-                            <button class="${task.completed ? 'btn-danger' : 'btn-success'}" onclick="toggleTask(${task.id})">
-                                ${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'} ${task.completed ? 'Batalkan' : 'Selesai'}
-                            </button>
-                            <button class="btn-danger" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i> Hapus</button>
-                        </div>
-                    `;
-                    
-                    taskList.appendChild(taskItem);
-                });
             }
             
-            updateStats();
+            // Kelompokkan tugas berdasarkan hari
+            const tasksByDayMap = {};
+            activeDays.forEach(day => {
+                tasksByDayMap[day] = tasks.filter(task => task.day === day);
+            });
+            
+            // Buat section untuk setiap hari
+            activeDays.forEach(day => {
+                const dayTasks = tasksByDayMap[day];
+                if (dayTasks.length > 0) {
+                    const daySection = document.createElement('div');
+                    daySection.className = 'day-section';
+                    
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'day-header';
+                    dayHeader.innerHTML = `
+                        <h3>${day}</h3>
+                        <span>${dayTasks.length} tugas</span>
+                    `;
+                    
+                    const dayTasksContainer = document.createElement('div');
+                    dayTasksContainer.className = 'day-tasks';
+                    
+                    dayTasks.forEach(task => {
+                        const taskItem = document.createElement('div');
+                        taskItem.className = `task-item ${task.completed ? 'completed' : ''} ${task.absent ? 'absent' : ''}`;
+                        
+                        taskItem.innerHTML = `
+                            <div class="task-info">
+                                <h3>${task.name}</h3>
+                                <p><strong>Penanggung:</strong> ${task.assignee}</p>
+                                ${task.absent ? `<p><strong>Alasan:</strong> ${task.absenceReason}</p>` : ''}
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn-success" onclick="openEditModal(${task.id})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                            </div>
+                        `;
+                        
+                        dayTasksContainer.appendChild(taskItem);
+                    });
+                    
+                    daySection.appendChild(dayHeader);
+                    daySection.appendChild(dayTasksContainer);
+                    tasksByDay.appendChild(daySection);
+                }
+            });
+            
+            // Tambahkan section untuk alasan ketidakhadiran
+            const absenceSection = document.createElement('div');
+            absenceSection.className = 'card';
+            absenceSection.innerHTML = `
+                <h2><i class="fas fa-user-times"></i> Tandai Ketidakhadiran</h2>
+                <p>Klik tombol di bawah untuk menandai siswa yang tidak hadir:</p>
+                <button class="btn-warning" onclick="openAbsenceModal()" style="width: 100%; margin-top: 10px;">
+                    <i class="fas fa-user-times"></i> Tandai Ketidakhadiran
+                </button>
+            `;
+            
+            tasksByDay.appendChild(absenceSection);
         }
 
         // Fungsi untuk memperbarui statistik
         function updateStats() {
             const totalTasks = tasks.length;
             const completedTasks = tasks.filter(task => task.completed).length;
-            const pendingTasks = totalTasks - completedTasks;
+            const absentTasks = tasks.filter(task => task.absent).length;
             
             totalTasksEl.textContent = totalTasks;
             completedTasksEl.textContent = completedTasks;
-            pendingTasksEl.textContent = pendingTasks;
+            absentTasksEl.textContent = absentTasks;
         }
 
         // Fungsi untuk menambah tugas baru
@@ -524,12 +792,15 @@
                     name: taskName,
                     assignee: assignee,
                     day: day,
-                    completed: false
+                    completed: false,
+                    absent: false,
+                    absenceReason: ''
                 };
                 
                 tasks.push(newTask);
                 saveTasks();
-                renderTasks();
+                renderTasksByDay();
+                updateStudentList();
                 
                 // Reset form
                 taskForm.reset();
@@ -538,29 +809,141 @@
             }
         }
 
-        // Fungsi untuk menandai tugas selesai/belum selesai
-        function toggleTask(id) {
-            tasks = tasks.map(task => {
-                if (task.id === id) {
-                    return { ...task, completed: !task.completed };
+        // Fungsi untuk mengatur tugas dari tombol
+        function setTask(taskName) {
+            document.getElementById('taskName').value = taskName;
+        }
+
+        // Fungsi untuk membuka modal edit
+        function openEditModal(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                editTaskId.value = task.id;
+                editTaskName.value = task.name;
+                editAssignee.value = task.assignee;
+                editDay.value = task.day;
+                
+                // Atur status tombol
+                if (task.completed) {
+                    markCompleted.classList.add('active');
+                    markPending.classList.remove('active');
+                } else {
+                    markCompleted.classList.remove('active');
+                    markPending.classList.add('active');
                 }
-                return task;
+                
+                editModal.style.display = 'flex';
+            }
+        }
+
+        // Fungsi untuk membuka modal ketidakhadiran
+        function openAbsenceModal() {
+            updateStudentList();
+            absenceModal.style.display = 'flex';
+        }
+
+        // Fungsi untuk memperbarui daftar siswa
+        function updateStudentList() {
+            // Ambil daftar siswa unik dari tugas
+            const students = [...new Set(tasks.map(task => task.assignee))];
+            
+            absentStudent.innerHTML = '';
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student;
+                option.textContent = student;
+                absentStudent.appendChild(option);
             });
             
-            saveTasks();
-            renderTasks();
-            updateMessagePreview();
+            // Tambahkan opsi untuk menambah siswa baru
+            const addOption = document.createElement('option');
+            addOption.value = 'add_new';
+            addOption.textContent = '+ Tambah Siswa Baru';
+            absentStudent.appendChild(addOption);
+        }
+
+        // Fungsi untuk menutup modal
+        function closeEditModal() {
+            editModal.style.display = 'none';
+            absenceModal.style.display = 'none';
+            newStudentName.style.display = 'none';
+        }
+
+        // Fungsi untuk menyimpan perubahan edit
+        function saveEditTask(event) {
+            event.preventDefault();
+            
+            const id = parseInt(editTaskId.value);
+            const taskIndex = tasks.findIndex(t => t.id === id);
+            
+            if (taskIndex !== -1) {
+                tasks[taskIndex].name = editTaskName.value;
+                tasks[taskIndex].assignee = editAssignee.value;
+                tasks[taskIndex].day = editDay.value;
+                tasks[taskIndex].completed = markCompleted.classList.contains('active');
+                
+                saveTasks();
+                renderTasksByDay();
+                updateStudentList();
+                updateMessagePreview();
+                closeEditModal();
+                
+                showNotification('Perubahan berhasil disimpan!');
+            }
         }
 
         // Fungsi untuk menghapus tugas
-        function deleteTask(id) {
+        function deleteTask() {
+            const id = parseInt(editTaskId.value);
+            
             if (confirm('Apakah Anda yakin ingin menghapus tugas ini?')) {
                 tasks = tasks.filter(task => task.id !== id);
                 saveTasks();
-                renderTasks();
+                renderTasksByDay();
+                updateStudentList();
                 updateMessagePreview();
+                closeEditModal();
+                
                 showNotification('Tugas berhasil dihapus!');
             }
+        }
+
+        // Fungsi untuk menandai ketidakhadiran
+        function markAbsence(reason) {
+            let studentName = absentStudent.value;
+            
+            // Jika memilih untuk menambah siswa baru
+            if (studentName === 'add_new') {
+                studentName = newStudentName.value.trim();
+                if (!studentName) {
+                    showNotification('Harap masukkan nama siswa!', true);
+                    return;
+                }
+            }
+            
+            if (!studentName || studentName === 'add_new') {
+                showNotification('Harap pilih atau tambahkan nama siswa!', true);
+                return;
+            }
+            
+            const newTask = {
+                id: Date.now(),
+                name: `Tidak hadir (${reason})`,
+                assignee: studentName,
+                day: activeDays[new Date().getDay() - 1] || 'Senin', // Default ke hari ini
+                completed: false,
+                absent: true,
+                absenceReason: reason
+            };
+            
+            tasks.push(newTask);
+            saveTasks();
+            renderTasksByDay();
+            updateStudentList();
+            updateMessagePreview();
+            closeEditModal();
+            
+            showNotification(`Ketidakhadiran ${studentName} karena ${reason} telah dicatat!`);
         }
 
         // Fungsi untuk memuat pengaturan
@@ -572,17 +955,15 @@
         // Fungsi untuk memperbarui pratinjau pesan
         function updateMessagePreview() {
             const selectedDay = filterDay.value;
-            const name = recipientName.value || settings.teacherName || '';
+            const name = teacherName.value || '';
             
             let message = '';
             
             // Tambahkan salam personalisasi
             if (name) {
-                message += `Assalamualaikum ${name.trim()}.\n\n`;
-            }
-            
-            // Tambahkan pesan kustom
-            if (settings.customMessage) {
+                const customMsg = settings.customMessage.replace('(Nama Guru)', name);
+                message += `${customMsg}\n\n`;
+            } else {
                 message += `${settings.customMessage}\n\n`;
             }
             
@@ -600,17 +981,19 @@
             }
             
             // Kelompokkan tugas berdasarkan hari
-            const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-            
-            days.forEach(day => {
+            activeDays.forEach(day => {
                 const dayTasks = filteredTasks.filter(task => task.day === day);
                 
                 if (dayTasks.length > 0) {
                     message += `*${day}:*\n`;
                     
                     dayTasks.forEach(task => {
-                        const status = task.completed ? '✅' : '⏳';
-                        message += `${status} ${task.name} - ${task.assignee}\n`;
+                        if (task.absent) {
+                            message += `❌ ${task.assignee} - ${task.absenceReason}\n`;
+                        } else {
+                            const status = task.completed ? '✅' : '⏳';
+                            message += `${status} ${task.name} - ${task.assignee}\n`;
+                        }
                     });
                     
                     message += '\n';
@@ -619,11 +1002,11 @@
             
             // Tambahkan catatan jika tidak ada tugas
             if (filteredTasks.length === 0) {
-                message += "Tidak ada tugas piket untuk hari ini.\n";
+                message += "Tidak ada tugas piket untuk hari ini\n";
             }
             
             // Tambahkan penutup
-            message += "\nTerima kasih Ibu/Bapa🙏";
+            message += "\nTerima kasih Bapa/Ibu (Nama Guru)🙏";
             
             messagePreview.textContent = message;
         }
@@ -650,7 +1033,7 @@
             settings.teacherName = teacherName.value;
             saveSettingsToStorage();
             updateMessagePreview();
-            showNotification('Pengaturan berhasil disimpan!');
+            showNotification('berhasil disimpan!');
         }
 
         // Fungsi untuk menampilkan notifikasi
@@ -691,7 +1074,34 @@
         copyMessage.addEventListener('click', copyToClipboard);
         saveSettings.addEventListener('click', saveAppSettings);
         filterDay.addEventListener('change', updateMessagePreview);
-        recipientName.addEventListener('input', updateMessagePreview);
+        teacherName.addEventListener('input', updateMessagePreview);
+        closeModal.forEach(btn => btn.addEventListener('click', closeEditModal));
+        editTaskForm.addEventListener('submit', saveEditTask);
+        deleteTaskBtn.addEventListener('click', deleteTask);
+        
+        // Tombol status tugas
+        markCompleted.addEventListener('click', () => {
+            markCompleted.classList.add('active');
+            markPending.classList.remove('active');
+        });
+        
+        markPending.addEventListener('click', () => {
+            markCompleted.classList.remove('active');
+            markPending.classList.add('active');
+        });
+
+        // Event untuk menambah siswa baru
+        addStudentBtn.addEventListener('click', () => {
+            newStudentName.style.display = 'block';
+            absentStudent.value = 'add_new';
+        });
+
+        // Tutup modal saat klik di luar konten modal
+        window.addEventListener('click', (event) => {
+            if (event.target === editModal || event.target === absenceModal) {
+                closeEditModal();
+            }
+        });
 
         // Inisialisasi aplikasi
         init();
