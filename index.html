@@ -419,15 +419,13 @@
     <script>
         // Data contoh untuk tugas piket
         let tasks = JSON.parse(localStorage.getItem('piketTasks')) || [
-            { id: 1, name: "Menyapu ruang tamu", assignee: "Andi", day: "Senin", completed: false },
-            { id: 2, name: "Membersihkan kamar mandi", assignee: "Budi", day: "Selasa", completed: false },
-            { id: 3, name: "Mengepel lantai", assignee: "Citra", day: "Rabu", completed: true }
+
         ];
 
         // Pengaturan WhatsApp
         let settings = JSON.parse(localStorage.getItem('piketSettings')) || {
-            customMessage: "Halo! Berikut jadwal piket untuk minggu ini:",
-            teacherName: ""
+            customMessage: "Ibu/Bapa (Nama Guru) aku izin kirim list yang piket hari ini:",
+            teacherName: "Ibu/Bapa (Nama Guru)"
         };
 
         // Elemen DOM
