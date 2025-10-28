@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Piket Kelas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-broom"></i> Sistem Piket Kelas</h1>
+            <div class="date-display" id="dateDisplay"></div>
+        </header>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="card">
+                    <h2><i class="fas fa-plus-circle"></i> Tambah Tugas Piket</h2>
+                    <form id="taskForm">
+                        <div class="form-group">
+                            <label for="assignee">Nama Siswa</label>
+                            <input type="text" id="assignee" placeholder="Nama siswa" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Pilih Tugas (Maksimal 3)</label>
+                            <div class="task-buttons">
+                                <button type="button" class="task-btn" data-task="Menyapu lantai">
+                                    <i class="fas fa-broom"></i> Menyapu
+                                </button>
+                                <button type="button" class="task-btn" data-task="Mengepel lantai">
+                                    <i class="fas fa-water"></i> Mengepel
+                                </button>
+                                <button type="button" class="task-btn" data-task="Membersihkan papan tulis">
+                                    <i class="fas fa-chalkboard"></i> Papan Tulis
+                                </button>
+                                <button type="button" class="task-btn" data-task="Merapihkan kursi">
+                                    <i class="fas fa-chair"></i> Merapihkan Kursi
+                                </button>
+                            </div>
+                            <div id="selectedTasks" class="selected-tasks">
+                                <!-- Tugas yang dipilih akan muncul di sini -->
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary"><i class="fas fa-plus"></i> Tambah Tugas</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-user-times"></i> Tandai Tidak Piket</h2>
+                    <form id="absenceForm">
+                        <div class="form-group">
+                            <label for="absentStudent">Nama Siswa</label>
+                            <input type="text" id="absentStudent" placeholder="Nama siswa yang tidak piket" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="absenceReason">Alasan</label>
+                            <select id="absenceReason" required>
+                                <option value="">Pilih alasan</option>
+                                <option value="Sakit">Sakit</option>
+                                <option value="Izin">Izin</option>
+                                <option value="Kabur">Kabur</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-warning"><i class="fas fa-user-times"></i> Tandai Tidak Piket</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="card">
+                    <h2><i class="fas fa-tasks"></i> Daftar Piket Hari Ini</h2>
+                    <div class="summary">
+                        <div class="summary-item">
+                            <span class="summary-count" id="piketCount">0</span>
+                            <span class="summary-label">Piket</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-count" id="tidakPiketCount">0</span>
+                            <span class="summary-label">Tidak Piket</span>
+                        </div>
+                    </div>
+                    <div id="tasksToday">
+                        <!-- Daftar tugas hari ini akan muncul di sini -->
+                    </div>
+                    <div class="empty-state" id="emptyState">
+                        <p><i class="fas fa-inbox"></i> Belum ada tugas piket hari ini.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fab fa-whatsapp"></i> Kirim Laporan ke WhatsApp</h2>
+                    <div class="form-group">
+                        <label for="teacherName">Nama Guru</label>
+                        <input type="text" id="teacherName" placeholder="Contoh: Bu Sari">
+                    </div>
+                    <div class="message-preview" id="messagePreview">
+                        Pesan akan muncul di sini...
+                    </div>
+                    <div class="action-buttons">
+                        <button id="sendWhatsApp" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Kirim ke WhatsApp</button>
+                        <button id="copyMessage" class="btn-secondary"><i class="fas fa-copy"></i> Salin Teks</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2023 Sistem Piket Kelas | Dibuat untuk memudahkan pengelolaan piket</p>
+        </footer>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Pesan berhasil disalin!</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
